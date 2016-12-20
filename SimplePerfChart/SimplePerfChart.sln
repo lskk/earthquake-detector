@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoApplication", "SimplePerfChart\DemoApplication.csproj", "{DAA76580-EB99-4A7C-A18B-60C7A16162DD}"
 EndProject
@@ -13,6 +13,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Maps", "Maps", "{61C3E2D2-B
 		..\..\TA\GUI\Release-NETv4.0\GMap.NET.Core.xml = ..\..\TA\GUI\Release-NETv4.0\GMap.NET.Core.xml
 		..\..\TA\GUI\Release-NETv4.0\GMap.NET.WindowsForms.dll = ..\..\TA\GUI\Release-NETv4.0\GMap.NET.WindowsForms.dll
 		..\..\TA\GUI\Release-NETv4.0\GMap.NET.WindowsForms.xml = ..\..\TA\GUI\Release-NETv4.0\GMap.NET.WindowsForms.xml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5B3E9B1D-C72B-41D1-8D60-50E189550502}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
 	EndProjectSection
 EndProject
 Global

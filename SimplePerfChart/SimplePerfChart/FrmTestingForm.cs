@@ -14,6 +14,7 @@ using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
 using GMap.NET.MapProviders;
 using Newtonsoft.Json;
+using System.IO;
 
 namespace SimplePerfChart
 {
@@ -109,11 +110,31 @@ public partial class FrmTestingForm : Form
             Thread.Sleep(Convert.ToInt32(e.Argument));
         }
 
+  
+
+        public class Config
+        {
+            
+            public string host;
+            public string user;
+            public string password;
+            
+        }
+
         private void bgWrkTimer_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
             accel accel_data;
             AccelerationReport accelerations = new AccelerationReport();
             int genValue = randGen.Next(valueGenFrom, valueGenTo);
-            var factory = new ConnectionFactory() { HostName = "localhost" };
+            ConnectionFactory factory;
+            using (StreamReader r = new StreamReader("config.json"))
+            {
+                string json = r.ReadToEnd();
+                Config config = JsonConvert.DeserializeObject<Config>(json);
+
+                factory = new ConnectionFactory() { HostName = config.host, UserName = config.user, Password = config.password  };
+            }
+
+            
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {
