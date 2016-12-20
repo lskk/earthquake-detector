@@ -13,12 +13,42 @@ using GMap.NET;
 using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
 using GMap.NET.MapProviders;
-
-
+using Newtonsoft.Json;
 
 namespace SimplePerfChart
 {
-    public partial class FrmTestingForm : Form
+    class AccelerationReport
+    {
+        public string pointTime;
+        public string timeZone;
+        public Geometry geometry;
+        public AccelerationSample[] accelerations;
+
+    }
+
+
+    class Geometry
+    {
+        public string type;
+        public GeometryData geometry;
+    }
+
+    class GeometryData
+    {
+        public string type;
+        public float[] coordinates;
+    }
+
+    class AccelerationSample
+    {
+        public float x;
+        public float y;
+        public float z;
+
+    }
+
+
+public partial class FrmTestingForm : Form
     {
         private object valueGenSync = new object();
         private Random randGen = new Random();
@@ -81,37 +111,47 @@ namespace SimplePerfChart
 
         private void bgWrkTimer_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
             accel accel_data;
+            AccelerationReport accelerations = new AccelerationReport();
             int genValue = randGen.Next(valueGenFrom, valueGenTo);
             var factory = new ConnectionFactory() { HostName = "localhost" };
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {
-                channel.QueueDeclare(queue: "hello",
+                channel.QueueDeclare(queue: "emergency_gui",
                                      durable: false,
                                      exclusive: false,
                                      autoDelete: false,
                                      arguments: null);
-
+                Console.WriteLine("Queue Declare Emergency GUI");
                 var consumer = new EventingBasicConsumer(channel);
                 consumer.Received += (model, ea) =>
                 {
                     var body = ea.Body;
                     var message = Encoding.UTF8.GetString(body);
-                   // Console.WriteLine(" [x] Received {0}", message);
+                    Console.WriteLine(" [x] Received {0}", message);
                     data = message;
-                    accel_data = ParsingMessage(data);
-                    Console.WriteLine("{0} {1} {2}", accel_data.accel_x, accel_data.accel_y, accel_data.accel_z);
-                    perfChart.AddValue(accel_data.accel_x);
-                    perfChart1.AddValue(accel_data.accel_y);
-                    perfChart2.AddValue(accel_data.accel_z);
+                    //accel_data = ParsingMessage(data);
+                    try
+                    {
+                        AccelerationReport accelReport = JsonConvert.DeserializeObject<AccelerationReport>(message);
+
+                        //Console.WriteLine("{0} {1} {2}", accel_data.accel_x, accel_data.accel_y, accel_data.accel_z);
+                        Console.WriteLine("{0} {1} {2} {3}", accelReport.geometry.geometry.coordinates, accelReport.accelerations[0].x, accelReport.accelerations[0].y, accelReport.accelerations[0].z);
+                        perfChart.AddValue((decimal)accelReport.accelerations[0].x * 1000);
+                        perfChart1.AddValue((decimal)accelReport.accelerations[0].y * 1000);
+                        perfChart2.AddValue((decimal)accelReport.accelerations[0].z * 1000);
+                    } catch (Exception ex)
+                    {
+                        Console.WriteLine("ERROR: {0}", ex);
+                    }
 
                 };
-                channel.BasicConsume(queue: "hello",
+                channel.BasicConsume(queue: "emergency_gui",
                                      noAck: true,
                                      consumer: consumer);
 
-                Console.WriteLine(" Press [enter] to exit.");
-                Console.ReadLine();
+                Console.WriteLine("Already BasicConsume");
+                //Console.ReadLine();
             }
             
             if (chkBxTimerEnabled.Checked) {
@@ -162,38 +202,39 @@ namespace SimplePerfChart
             perfChart.Clear();
         }
 
-        public static void receive()
-        {
-            var factory = new ConnectionFactory() { HostName = "localhost" };
-            using (var connection = factory.CreateConnection())
-            using (var channel = connection.CreateModel())
-            {
-                channel.ExchangeDeclare(exchange: "data", type: "fanout");
-                channel.QueueDeclare(queue: "hello",
-                                     durable: false,
-                                     exclusive: false,
-                                     autoDelete: false,
-                                     arguments: null);
-                channel.QueueBind(queue: "hello",
-                              exchange: "data",
-                              routingKey: "");
+        //public static void receive()
+        //{
+        //    var factory = new ConnectionFactory() { HostName = "localhost" };
+        //    using (var connection = factory.CreateConnection())
+        //    using (var channel = connection.CreateModel())
+        //    {
+        //        //channel.ExchangeDeclare(exchange: "data", type: "fanout");
 
-                var consumer = new EventingBasicConsumer(channel);
-                consumer.Received += (model, ea) =>
-                {
-                    var body = ea.Body;
-                    var message = Encoding.UTF8.GetString(body);
-                    Console.WriteLine(" [x] Received {0}", message);
-                    //data = Convert.ToDecimal(message);
-                };
-                channel.BasicConsume(queue: "hello",
-                                     noAck: true,
-                                     consumer: consumer);
+        //        channel.QueueDeclare(queue: "emergency_gui",
+        //                             durable: false,
+        //                             exclusive: false,
+        //                             autoDelete: false,
+        //                             arguments: null);
+        //        channel.QueueBind(queue: "emergency_gui",
+        //                      exchange: "amq.topic",
+        //                      routingKey: "emergency");
 
-                Console.WriteLine(" Press [enter] to exit.");
-                Console.ReadLine();
-            }
-        }
+        //        var consumer = new EventingBasicConsumer(channel);
+        //        consumer.Received += (model, ea) =>
+        //        {
+        //            var body = ea.Body;
+        //            var message = Encoding.UTF8.GetString(body);
+        //            Console.WriteLine(" [x] Received {0}", message);
+        //            //data = Convert.ToDecimal(message);
+        //        };
+        //        channel.BasicConsume(queue: "emergency_gui",
+        //                             noAck: true,
+        //                             consumer: consumer);
+
+        //        Console.WriteLine(" Press [enter] to exit.");
+        //        Console.ReadLine();
+        //    }
+        //}
 
         private void FrmTestingForm_Load(object sender, EventArgs e)
         {
@@ -234,7 +275,7 @@ namespace SimplePerfChart
 
         private void perfChart_Load(object sender, EventArgs e)
         {
-            receive();
+            //receive();
         }
     }
 
