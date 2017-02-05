@@ -18,40 +18,13 @@ using System.IO;
 
 namespace SimplePerfChart
 {
-    class AccelerationReport
-    {
-        public string pointTime;
-        public string timeZone;
-        public Geometry geometry;
-        public AccelerationSample[] accelerations;
-
-    }
-
-
-    class Geometry
-    {
-        public string type;
-        public GeometryData geometry;
-    }
-
-    class GeometryData
-    {
-        public string type;
-        public float[] coordinates;
-    }
-
-    class AccelerationSample
-    {
-        public float x;
-        public float y;
-        public float z;
-
-    }
+    
 
 
 public partial class FrmTestingForm : Form
     {
         private object valueGenSync = new object();
+        GMapOverlay markers = new GMapOverlay("markers");
         private Random randGen = new Random();
         //public static decimal data = 0;
         private int valueGenFrom = -5;
@@ -158,9 +131,15 @@ public partial class FrmTestingForm : Form
 
                         //Console.WriteLine("{0} {1} {2}", accel_data.accel_x, accel_data.accel_y, accel_data.accel_z);
                         Console.WriteLine("{0} {1} {2} {3}", accelReport.geometry.geometry.coordinates, accelReport.accelerations[0].x, accelReport.accelerations[0].y, accelReport.accelerations[0].z);
-                        perfChart.AddValue((decimal)accelReport.accelerations[0].x * 1000);
-                        perfChart1.AddValue((decimal)accelReport.accelerations[0].y * 1000);
-                        perfChart2.AddValue((decimal)accelReport.accelerations[0].z * 1000);
+                        perfChart.AddValue(Math.Abs((decimal)accelReport.accelerations[0].x * 1000));
+                        perfChart1.AddValue(Math.Abs((decimal)accelReport.accelerations[0].y * 1000));
+                        perfChart2.AddValue(Math.Abs((decimal)accelReport.accelerations[0].z * 1000));
+                        markers.Markers.Clear();
+                        GMapMarker marker1 = new GMarkerGoogle(
+                        new PointLatLng(-6.890910, 107.610300),
+                        GMarkerGoogleType.blue_pushpin);
+                        markers.Markers.Add(marker1);
+                        gMapControl1.Overlays.Add(markers);
                     } catch (Exception ex)
                     {
                         Console.WriteLine("ERROR: {0}", ex);
@@ -217,6 +196,8 @@ public partial class FrmTestingForm : Form
                 valueGenTimerTo = valueGenTimerFrom;
                 numUpDnToInterval.Value = valueGenTimerTo;
             }
+
+            
         }
 
         private void btnClear_Click(object sender, EventArgs e) {
@@ -269,7 +250,7 @@ public partial class FrmTestingForm : Form
             GMap.NET.GMaps.Instance.Mode = GMap.NET.AccessMode.ServerOnly;
             gMapControl1.Position = new GMap.NET.PointLatLng(-6.9175, 107.6191);
             gMapControl1.ShowCenter = false;
-            GMapOverlay markers = new GMapOverlay("markers");
+            
             GMapMarker marker = new GMarkerGoogle(
                 new PointLatLng(-6.890903, 107.610378),
                 GMarkerGoogleType.blue_pushpin);
@@ -300,7 +281,35 @@ public partial class FrmTestingForm : Form
         }
     }
 
+    class AccelerationReport
+    {
+        public string pointTime;
+        public string timeZone;
+        public Geometry geometry;
+        public AccelerationSample[] accelerations;
 
-
-   
     }
+
+
+    class Geometry
+    {
+        public string type;
+        public GeometryData geometry;
+    }
+
+    class GeometryData
+    {
+        public string type;
+        public float[] coordinates;
+    }
+
+    class AccelerationSample
+    {
+        public float x;
+        public float y;
+        public float z;
+
+    }
+
+
+}
