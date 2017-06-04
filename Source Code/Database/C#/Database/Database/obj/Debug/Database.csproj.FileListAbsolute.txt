@@ -1,0 +1,11 @@
+C:\Users\X450JB\Desktop\Database\Database\bin\Debug\Database.exe.config
+C:\Users\X450JB\Desktop\Database\Database\bin\Debug\Database.exe
+C:\Users\X450JB\Desktop\Database\Database\bin\Debug\Database.pdb
+C:\Users\X450JB\Desktop\Database\Database\obj\Debug\Database.csprojResolveAssemblyReference.cache
+C:\Users\X450JB\Desktop\Database\Database\obj\Debug\Database.exe
+C:\Users\X450JB\Desktop\Database\Database\obj\Debug\Database.pdb
+C:\Users\X450JB\Desktop\Database\Database\bin\Debug\Newtonsoft.Json.dll
+C:\Users\X450JB\Desktop\Database\Database\bin\Debug\RabbitMQ.Client.dll
+C:\Users\X450JB\Desktop\Database\Database\bin\Debug\Newtonsoft.Json.xml
+C:\Users\X450JB\Desktop\Database\Database\bin\Debug\RabbitMQ.Client.xml
+C:\Users\X450JB\Desktop\Database\Database\bin\Debug\MySql.Data.dll

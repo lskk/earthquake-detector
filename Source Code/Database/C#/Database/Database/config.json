@@ -1,0 +1,7 @@
+﻿{
+    "host": "localhost",
+    "user": "guest",
+	"vhost": "/",
+    "password": "guest",
+	"durable": false
+}

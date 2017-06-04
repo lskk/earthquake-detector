@@ -1,0 +1,7 @@
+{
+    "host": "black-boar.rmq.cloudamqp.com",
+    "user": "lsowqccg",
+	"vhost": "lsowqccg",
+	"port" : "21650",
+    "password": "kbLv9YbzjQwxz20NH7Rfy98TTV2eK17j"
+}
